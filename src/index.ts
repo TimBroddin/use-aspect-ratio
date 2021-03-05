@@ -1,5 +1,8 @@
 import { useState, useLayoutEffect, useRef } from 'react';
 
+declare var window:any;
+
+
 type WindowSize = {
   readonly innerHeight: number;
   readonly innerWidth: number;
