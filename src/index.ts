@@ -8,12 +8,21 @@ type WindowSize = {
 };
 
 function getWindowSize(): WindowSize {
-  return {
-    innerHeight: window.innerHeight,
-    innerWidth: window.innerWidth,
-    outerHeight: window.outerHeight,
-    outerWidth: window.outerWidth,
-  };
+  if(typeof window === "undefined") {
+    return {
+      innerHeight: 0,
+      innerWidth: 0,
+      outerHeight: 0,
+      outerWidth: 0
+    }
+  } else {
+    return {
+      innerHeight: window.innerHeight,
+      innerWidth: window.innerWidth,
+      outerHeight: window.outerHeight,
+      outerWidth: window.outerWidth,
+    };
+  }
 }
 
 /**
@@ -24,26 +33,30 @@ function getWindowSize(): WindowSize {
 export function useWindowSize(callback?: Function): WindowSize {
   let [windowSize, setWindowSize] = useState(getWindowSize());
 
-  const resize = () => {
-    window.requestAnimationFrame(() => {
-      const size = getWindowSize();
+  if(typeof window === "undefined") {
+    return getWindowSize();
+  } else {
+    const resize = () => {
+      window.requestAnimationFrame(() => {
+        const size = getWindowSize();
 
-      callback(size);
-      setWindowSize(size);
-    });
-  };
+        callback(size);
+        setWindowSize(size);
+      });
+    };
 
-  useLayoutEffect(
-    () => {
-      callback(windowSize);
+    useLayoutEffect(
+      () => {
+        callback(windowSize);
 
-      window.addEventListener('resize', resize, false);
-      return () => window.removeEventListener('resize', resize, false);
-    },
-    [],
-  );
+        window.addEventListener('resize', resize, false);
+        return () => window.removeEventListener('resize', resize, false);
+      },
+      [],
+    );
 
-  return windowSize;
+    return windowSize;
+  }
 }
 
 export function useAspectRatio(ratio: number) {
