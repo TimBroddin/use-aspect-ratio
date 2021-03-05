@@ -11,13 +11,22 @@ type WindowSize = {
 };
 
 function getWindowSize(): WindowSize {
-
+  if(typeof window == "undefined"){
     return {
-      innerHeight: window?.innerHeight ?? 600,
-      innerWidth: window?.innerWidth ?? 800,
-      outerHeight: window?.outerHeight ?? 600,
-      outerWidth: window?.outerWidth ?? 800,
+      innerHeight: 600,
+      innerWidth: 600,
+      outerHeight: 600,
+      outerWidth: 600
     };
+  } else {
+    return {
+      innerHeight: window.innerHeight,
+      innerWidth: window.innerWidth,
+      outerHeight: window.outerHeight,
+      outerWidth: window.outerWidth
+    };
+  }
+
 }
 
 /**
@@ -30,7 +39,7 @@ export function useWindowSize(callback?: Function): WindowSize {
 
 
     const resize = () => {
-      window?.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         const size = getWindowSize();
 
         callback(size);
@@ -40,10 +49,12 @@ export function useWindowSize(callback?: Function): WindowSize {
 
     useLayoutEffect(
       () => {
-        callback(windowSize);
+        if(typeof window !== "undefined") {
+          callback(windowSize);
 
-        window?.addEventListener('resize', resize, false);
-        return () => window?.removeEventListener('resize', resize, false);
+          window.addEventListener('resize', resize, false);
+          return () => window.removeEventListener('resize', resize, false);
+        }
       },
       [],
     );
