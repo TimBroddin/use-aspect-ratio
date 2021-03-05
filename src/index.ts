@@ -8,21 +8,13 @@ type WindowSize = {
 };
 
 function getWindowSize(): WindowSize {
-  if(typeof window === "undefined") {
+
     return {
-      innerHeight: 0,
-      innerWidth: 0,
-      outerHeight: 0,
-      outerWidth: 0
-    }
-  } else {
-    return {
-      innerHeight: window.innerHeight,
-      innerWidth: window.innerWidth,
-      outerHeight: window.outerHeight,
-      outerWidth: window.outerWidth,
+      innerHeight: window?.innerHeight ?? 600,
+      innerWidth: window?.innerWidth ?? 800,
+      outerHeight: window?.outerHeight ?? 600,
+      outerWidth: window?.outerWidth ?? 800,
     };
-  }
 }
 
 /**
@@ -33,11 +25,9 @@ function getWindowSize(): WindowSize {
 export function useWindowSize(callback?: Function): WindowSize {
   let [windowSize, setWindowSize] = useState(getWindowSize());
 
-  if(typeof window === "undefined") {
-    return getWindowSize();
-  } else {
+
     const resize = () => {
-      window.requestAnimationFrame(() => {
+      window?.requestAnimationFrame(() => {
         const size = getWindowSize();
 
         callback(size);
@@ -49,14 +39,14 @@ export function useWindowSize(callback?: Function): WindowSize {
       () => {
         callback(windowSize);
 
-        window.addEventListener('resize', resize, false);
-        return () => window.removeEventListener('resize', resize, false);
+        window?.addEventListener('resize', resize, false);
+        return () => window?.removeEventListener('resize', resize, false);
       },
       [],
     );
 
     return windowSize;
-  }
+  
 }
 
 export function useAspectRatio(ratio: number) {
